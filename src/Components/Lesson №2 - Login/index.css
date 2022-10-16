@@ -1,0 +1,10 @@
+.title {
+    color: darkslateblue;
+    margin-left: 15px;
+}
+
+.line {
+    margin-left: 15px;
+    margin-right: 15px;
+    border-bottom: 1px solid black;
+}
