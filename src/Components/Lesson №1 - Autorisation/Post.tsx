@@ -3,12 +3,21 @@ import './Post.css';
 import axios from "axios";
 
 export function Post() {
+    // Login and email
     const [username, setUserName] = useState("")
     const [email, setEmail] = useState("");
 
+    // Password, confirmPassword, showInccorrectPassword
     const [password, setPassword] = useState("");
     const [confirmPassword, confirmSetPassword] = useState("");
     const [showIncorrectPasswordMessage, setShowIncorrectPasswordMessage] = useState(false);
+
+    // Next Page
+    const [nextPage, setNextPage] = useState(true)
+
+    // If we catch mistake
+    const [alertMessage, setAlertMessage] = useState("")
+
 
 
     const checkPassword = (event: ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +39,7 @@ export function Post() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
-        console.log(`The name you entered was: ${username} ${email} ${password}`)
+        // console.log(`The name you entered was: ${username} ${email} ${password}`)
 
         axios({
             method: "POST",
@@ -47,37 +56,22 @@ export function Post() {
             })
             .then(function (response) {
                 console.log(response.data);
-                // console.log(response.status);
-                // console.log(response.statusText);
-                // console.log(response.headers);
-                // console.log(response.config);
+                setAlertMessage("Вы успешно зарегались")
             })
             .catch(function (error) {
                 if (error.response) {
-                    // Сервер отвечает кодом, который выходит за пределеы 200
-                    // 1. Выводит в текстовом формате ошибку
+                    setAlertMessage("Ошибочка")
                     console.log(error.response.data);
-                    /* Варианты:
-                    1. a.app.CreateUser: Tx: repo.Save: db.GetContext: email exist
-                    2. invalid CreateUserRequest.Password: value length must be between 8 and 32 runes, inclusive
-                    3. a.app.CreateUser: Tx: repo.Save: db.GetContext: username exist
-
-                    */
-
-                    // Выводит статус ошибки
                     console.log(error.response.status);
                     console.log(error.response.headers);
                 } else if (error.request) {
-                    // Запрос был сделан, но ответ не был получен
-                    // Экземпляр: `error.request` — это экземпляр XMLHttpRequest в браузере и экземпляр => http.ClientRequest в node.js
                     console.log(error.request);
                 } else {
-                    // Произошло что-то при настройке запроса, вызвавшее ошибку
                     console.log('Error', error.message);
                 }
                 console.log(error.config);
             });
-
+            setNextPage(false)
     }
 
     return (
@@ -90,48 +84,51 @@ export function Post() {
                             <p> 1. Необходимо сделать форму, где пользователь вводит username, email и два поля для пароля.</p>
                             <p> 2. Если пользователь в одном поле для пароля внес один пароль, во второй форме, другой пароль, то выдавать ему ошибку "пароли не совпадают"</p>
                             <p> 3. Если пароли одинаковые, и проверка проходит, пользователь может нажать на кнопку "зарегистрироваться"</p>
-                            <p> 4. <b>Допилить:</b> Когда сервер возвращает ошибку тебе на регистрацию, покажи ее пользователю
+                            <p> 4. Когда сервер возвращает ошибку тебе на регистрацию, покажи ее пользователю
                                  Если же бекенд вернет status  200, то покажи пользователю сообщение "вы успешно зарегистрировались" </p>
                     </div>
                     <p className={'line'}></p>
                 </div>
 
+
                 <div className={'anotherBlock'}>
-                        <form onSubmit={handleSubmit}>
-                            <label> Username:
-                                <input value={username} name="username"
-                                       onChange={(event) => setUserName(event.target.value)} required
-                                />
-                            </label>
+                    { nextPage &&  (
+                            <form onSubmit={handleSubmit}>
+                                <label> Username:
+                                    <input value={username} name="username"
+                                           onChange={(event) => setUserName(event.target.value)} required
+                                    />
+                                </label>
+                                <label> Email:
+                                    <input value={email} name="email" type="email"
+                                           onChange={(event) => setEmail(event.target.value)} required
+                                    />
+                                </label>
+                                <label> Password:
+                                    <input value={password} name="password" type="password" id="password"
+                                           onChange={checkPassword} required
+                                    />
+                                </label>
+                                <label> Confirm password:
+                                    <input
+                                        value={confirmPassword} id="confirmPassword" type="password"
+                                        onChange={checkConfirmPasswords} required
+                                    />
+                                </label>
 
-                            <label> Email:
-                                <input value={email} name="email" type="email"
-                                    onChange={(event) => setEmail(event.target.value)} required
-                                />
-                            </label>
+                                {showIncorrectPasswordMessage ? <div> Пароли не совпадают </div> : ''}
 
-                            <label htmlFor="password"> Password:
-                                <input value={password} name="password" type="password" id="password"
-                                    onChange={checkPassword} required
-                                />
-                            </label>
+                                <button
+                                    disabled={
+                                        !confirmPassword || !password || !email || !username
+                                        || confirmPassword !== password
+                                    }
+                                    type = "submit"> Зарегистрироваться </button>
+                            </form>
+                        )}
 
-                            <label  htmlFor="confirmPassword"> Confirm password:
-                                <input
-                                    value={confirmPassword} id="confirmPassword" type="password"
-                                    onChange={checkConfirmPasswords} required
-                                />
-                            </label>
+                    <div>{alertMessage}</div>
 
-                            {showIncorrectPasswordMessage ? <div> Пароли не совпадают </div> : ''}
-
-                            <button
-                                disabled={
-                                    !confirmPassword || !password || !email || !username
-                                    || confirmPassword !== password
-                                }
-                                type = "submit"> Зарегистрироваться </button>
-                        </form>
                 </div>
                 <p className={'line'}></p>
             </div>
