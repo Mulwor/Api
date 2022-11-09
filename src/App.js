@@ -1,18 +1,14 @@
 import React from 'react';
 import './App.css';
-import {Login} from "./Components/Lesson №2 - Login and get token";
-import {Admin} from "./Components/Lesson №2 - Login and get token/Another/Users";
+import {Post} from "./Components/Lesson №1 - Autorisation/Post";
+import Login from "./Components/Lesson №2 - Login and get token";
 
 
 function App() {
   return (
       <div>
-          {/*
-                <Post />
-           */}
+          <Post />
           <Login />
-          <Admin />
-
       </div>
   )
 }

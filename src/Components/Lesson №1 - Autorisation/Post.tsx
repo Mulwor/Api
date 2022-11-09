@@ -43,7 +43,7 @@ export function Post() {
 
         axios({
             method: "POST",
-            url:"https://dev.mkkkr.net/user/api/v1/user",
+            url:"https://links-to.site/user/api/v1/user",
             headers: {
                 Accept: 'application/json',
                 'Content-Type': 'application/json'
